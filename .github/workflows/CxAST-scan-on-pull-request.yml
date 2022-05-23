@@ -1,0 +1,26 @@
+name: Cx-AST-scan-on-pull-request
+on:
+  pull_request:
+    types: [opened, reopened, synchronize] #Types specify which pull request events will trigger the workflow. For more events refer Github Actions documentation.
+    branches:
+      - main
+      
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Checkmarx AST CLI Action
+        uses: checkmarx/ast-github-action@main #Github Action version
+        with:
+          base_uri: https://eu.ast.checkmarx.net/
+          cx_tenant: cx_gs_enablement
+          cx_client_id: ${{ secrets.CLIENT_ID }}
+          cx_client_secret: ${{ secrets.SECRET }}
+          bug_tracker: GitHub
+          github_token: ${{secrets.GH_TOKEN}}  # To be stored in GitHub Secrets.
+          incremental: false 
+          scanners: sca,sast,kics
